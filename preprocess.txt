@@ -1,0 +1,62 @@
+import os
+import time
+import numpy as np
+import pandas as pd
+from torch import cuda
+import pandas as pd
+import json
+import random
+import torch
+#Create Dataset
+
+yelp_reviews = pd.read_json("/kaggle/input/yelp-dataset/yelp_academic_dataset_review.json", encoding = 'ISO-8859-1', lines=True, nrows=500000)
+yelp_business = pd.read_json("/kaggle/input/yelp-dataset/yelp_academic_dataset_business.json", encoding = 'ISO-8859-1', lines=True)
+
+sampled_business_ids = random.sample(yelp_business['business_id'].tolist(), 10000)
+sampled_reviews = yelp_reviews[yelp_reviews['business_id'].isin(sampled_business_ids)]
+counts = sampled_reviews['business_id'].value_counts()
+sampled_business_ids = counts[counts >= 3].index.tolist()
+sampled_reviews = sampled_reviews[sampled_reviews['business_id'].isin(sampled_business_ids)]
+sampled_businesses = yelp_business[yelp_business['business_id'].isin(sampled_business_ids)]
+sampled_businesses = sampled_businesses[['business_id','name','city','state','stars','review_count','is_open','categories','attributes','hours']]
+sampled_reviews = sampled_reviews[['review_id','business_id','stars','useful','funny','cool','text']]
+sampled_reviews = sampled_reviews.rename(columns = {'stars':'review_rating'})
+sampled_reviews['combined_id'] = sampled_reviews.apply(lambda row: f"{row['review_id']}_{row['business_id']}", axis=1)
+sample_df = pd.merge(sampled_businesses, sampled_reviews, on='business_id', how='left')
+
+def format_review(row):
+    # Separate true and false attributes
+    if isinstance(row['attributes'], str):
+        try:
+            attributes_dict = json.loads(row['attributes'])
+        except json.JSONDecodeError:
+            attributes_dict = {}
+    else:
+        attributes_dict = row['attributes']
+    if attributes_dict is not None:
+        attributes_true = [k for k, v in attributes_dict.items() if v]
+        attributes_false = [k for k, v in attributes_dict.items() if not v]
+    else:
+        attributes_true = []
+        attributes_false = []
+
+    # Format attributes
+    attr_true_str = ', '.join(attributes_true) if attributes_true else 'None'
+    attr_false_str = ', '.join(attributes_false) if attributes_false else 'None'
+
+    # Format review reactions
+    reactions = []
+    if row['useful'] == 1: reactions.append('useful')
+    if row['funny'] == 1: reactions.append('funny')
+    if row['cool'] == 1: reactions.append('cool')
+    reactions_str = ', '.join(reactions) if reactions else 'None'
+
+    # Construct the review text
+    review_text = f"{row['name']} in city {row['city']} state {row['state']} has {row['stars']} rating for {row['review_count']} reviews, offers {row['categories']} food and it has attributes {attr_true_str} and lacks {attr_false_str}. The restaurant is open {row['hours']}." #" User gave the restaurant {row['review_rating']} rating with review reading \"{row['text']}\". Others found this review {reactions_str}."
+
+    return review_text
+
+# sample_df['review'] = sample_df['text']
+sample_df['businessDetails'] = sample_df.apply(format_review, axis=1)
+sample_df = sample_df.rename(columns={'text': 'review'})
+sample_df.to_json('sampled_dataset.json', orient='records')
