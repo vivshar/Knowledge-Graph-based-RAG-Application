@@ -17,6 +17,7 @@ password = os.getenv("NEO4J_PASSWORD")
 ollama_base_url = os.getenv("OLLAMA_BASE_URL")
 embedding_model_name = os.getenv("EMBEDDING_MODEL")
 llm_name = os.getenv("LLM")
+emb_llm_name = os.getenv("LLM_EMBEDDING")
 # Remapping for Langchain Neo4j integration
 os.environ["NEO4J_URL"] = url
 
@@ -63,19 +64,19 @@ def insert_data(data: dict) -> None:
         #     embeddings_cache[details_text] = embeddings.embed_query(details_text)
         # # Retrieve embedding from cache
         # r["embedding"] = embeddings_cache[details_text]
-        review = r["review"]
-        truncated_review = " ".join(review.split()[:250])
-        r["embedding"] = embeddings.embed_query(truncated_review)
+        name  = r["name"]
+        # truncated_review = " ".join(review.split()[:250])
+        r["embedding"] = embeddings.embed_query(name)
         
         
         
     import_query = """
     UNWIND $data AS r
-    MERGE (restaurant:restaurant {name: r.name})
+    MERGE (restaurant:restaurant {name: r.name, embedding: r.embedding})
     ON CREATE SET restaurant.name = r.name, restaurant.businessDetails = r.businessDetails
 
     // Create and link Review nodes
-    MERGE (review:review {text: r.review, embedding: r.embedding})
+    MERGE (review:review {text: r.review})
     MERGE (restaurant)-[:HAS_REVIEW]->(review)
 
     // Create and link City nodes

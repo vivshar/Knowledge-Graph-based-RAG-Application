@@ -39,6 +39,28 @@ Here's what's in this repo:
 | Support Bot | `bot.py` | `bot` | http://localhost:8501 | Main usecase. Fullstack Python application. |
 | PDF Reader | `pdf_bot.py` | `pdf_bot` | http://localhost:8503 | Load Data into KG. Fullstack Python application. |
 | Standalone Bot API | `api.py` | `api` | http://localhost:8504 | Standalone HTTP API streaming (SSE) + non-streaming endpoints Python. |
+
+
 The database can be explored at http://localhost:7474.
+
+# Application Screenshots
+
+Below are screenshots demonstrating the user interface and functionality of the application:
+
+## Data loading
+
+![Loader](path/to/loader.png)
+
+## Graph visualization of inserted data
+
+![Graph Example](path/to/Graph_example.png)
+
+## Chat Interface
+
+![Chat UI](path/to/Chat_UI.png)
+
+
+
+
 
 This Project builds on the GenAI stack by Docker team

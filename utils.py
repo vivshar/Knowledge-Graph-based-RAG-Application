@@ -3,7 +3,7 @@ class BaseLogger:
         self.info = print
 
 def create_vector_index(driver, dimension: int) -> None:
-    index_query = "CALL db.index.vector.createNodeIndex('yelp', 'review', 'embedding', $dimension, 'cosine')"
+    index_query = "CALL db.index.vector.createNodeIndex('yelp', 'restaurant', 'embedding', $dimension, 'cosine')"
     try:
         driver.query(index_query, {"dimension": dimension})
     except:  # Already exists

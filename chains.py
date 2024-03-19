@@ -32,7 +32,7 @@ def load_embedding_model(embedding_model_name: str, logger=BaseLogger(), config=
         embeddings = OllamaEmbeddings(
             base_url=config["ollama_base_url"], model=model_name
         )
-        dimension = 3072
+        dimension = 4096 #3072
         
         # logger.info("Embedding: Using Ollama")
     elif embedding_model_name == "openai":
@@ -154,8 +154,8 @@ def configure_qa_rag_chain(llm, embeddings, embeddings_store_url, username, pass
         index_name="yelp",  # vector by default
         text_node_property="text",  # text by default 
         retrieval_query="""
-    WITH node AS review, score AS similarity
-    CALL  { with review
+    WITH node AS res, score AS similarity
+    CALL  { with res
         MATCH (res)<-[:HAS_REVIEW]-(review)
         WITH collect(review)[..2] as reviews, res
         RETURN reduce(str='### Restaurant Detail: ' + res.businessDetail, review IN reviews | str + 
@@ -163,7 +163,7 @@ def configure_qa_rag_chain(llm, embeddings, embeddings_store_url, username, pass
                 +  review.text + '\n') as reviewTexts
     } 
     RETURN 
-    reviewTexts AS text, similarity as score, {source: review.text} AS metadata
+    reviewTexts AS text, similarity as score, {source: reviewTexts} AS metadata
     ORDER BY similarity ASC // so that best answers are the last
     """
     )

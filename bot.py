@@ -23,6 +23,7 @@ password = os.getenv("NEO4J_PASSWORD")
 ollama_base_url = os.getenv("OLLAMA_BASE_URL")
 embedding_model_name = os.getenv("EMBEDDING_MODEL")
 llm_name = os.getenv("LLM")
+emb_llm_name = os.getenv("LLM_EMBEDDING")
 # Remapping for Langchain Neo4j integration
 os.environ["NEO4J_URL"] = url
 
@@ -77,7 +78,7 @@ st.markdown(styl, unsafe_allow_html=True)
 
 
 def chat_input():
-    user_input = st.chat_input("What coding issue can I help you resolve today?")
+    user_input = st.chat_input("Ask me something about a business")
 
     if user_input:
         with st.chat_message("user"):
