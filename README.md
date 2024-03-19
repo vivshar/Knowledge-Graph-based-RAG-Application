@@ -37,7 +37,7 @@ Here's what's in this repo:
 | Name | Main files | Compose name | URLs | Description |
 |---|---|---|---|---|
 | Support Bot | `bot.py` | `bot` | http://localhost:8501 | Main usecase. Fullstack Python application. |
-| PDF Reader | `pdf_bot.py` | `pdf_bot` | http://localhost:8503 | Load Data into KG. Fullstack Python application. |
+| loader | `loader.py` | `pdf_bot` | http://localhost:8502 | Load Data into KG. Fullstack Python application. |
 | Standalone Bot API | `api.py` | `api` | http://localhost:8504 | Standalone HTTP API streaming (SSE) + non-streaming endpoints Python. |
 
 
@@ -49,15 +49,15 @@ Below are screenshots demonstrating the user interface and functionality of the 
 
 ## Data loading
 
-![Loader](path/to/loader.png)
+![Loader](./images/loader.png)
 
 ## Graph visualization of inserted data
 
-![Graph Example](path/to/Graph_example.png)
+![Graph Example](./images/Graph_example.png)
 
 ## Chat Interface
 
-![Chat UI](path/to/Chat_UI.png)
+![Chat UI](./images/Chat_UI.png)
 
 
 
