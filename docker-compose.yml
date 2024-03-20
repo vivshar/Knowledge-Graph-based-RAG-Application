@@ -25,6 +25,7 @@ services:
     environment:
       - OLLAMA_BASE_URL=${OLLAMA_BASE_URL-http://host.docker.internal:11434}
       - LLM=${LLM-llama2}
+      - CODE_LLM=${CODE_LLM-codellama}
     networks:
       - net
     tty: true
