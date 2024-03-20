@@ -152,18 +152,19 @@ def configure_qa_rag_chain(llm, embeddings, embeddings_store_url, username, pass
         password=password,
         database="neo4j",  # neo4j by default
         index_name="yelp",  # vector by default
-        text_node_property="text",  # text by default 
+        text_node_property="name",  # text by default 
         retrieval_query="""
-    WITH node AS res, score AS similarity
-    CALL  { with res
-        MATCH (res)<-[:HAS_REVIEW]-(review)
-        WITH collect(review)[..2] as reviews, res
-        RETURN reduce(str='### Restaurant Detail: ' + res.businessDetail, review IN reviews | str + 
-                '\n### Review ('+
-                +  review.text + '\n') as reviewTexts
-    } 
-    RETURN 
-    reviewTexts AS text, similarity as score, {source: reviewTexts} AS metadata
+    WITH node AS restaurant, score AS similarity
+    CALL  {
+    WITH restaurant
+    MATCH (restaurant)-[:HAS_REVIEW]->(review)
+    WHERE restaurant.name = restaurant.name  // Ensure this matches the specific restaurant's name
+    WITH collect(review)[..2] AS reviews
+    RETURN reduce(str = '', review IN reviews | str + 
+            '\n### Review: ' + review.text + '\n') AS reviewTexts
+}
+RETURN '### Restaurant Detail: ' + restaurant.businessDetails + '\n' + reviewTexts
+AS text, similarity as score, {source: restaurant.name} AS metadata
     ORDER BY similarity ASC // so that best answers are the last
     """
     )
