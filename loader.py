@@ -64,9 +64,9 @@ def insert_data(data: dict) -> None:
         #     embeddings_cache[details_text] = embeddings.embed_query(details_text)
         # # Retrieve embedding from cache
         # r["embedding"] = embeddings_cache[details_text]
-        name  = r["name"]
+        businessDetails  = r["businessDetails"]
         # truncated_review = " ".join(review.split()[:250])
-        r["embedding"] = embeddings.embed_query(name)
+        r["embedding"] = embeddings.embed_query(businessDetails)
         
         
         
