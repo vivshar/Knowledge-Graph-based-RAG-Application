@@ -1,7 +1,7 @@
 #!/bin/sh
 # This script installs Ollama on Linux.
 # It detects the current operating system architecture and installs the appropriate version of Ollama.
-
+#This is only for WSL
 set -eu
 
 status() { echo ">>> $*" >&2; }
